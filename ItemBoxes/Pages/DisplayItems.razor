@@ -1,0 +1,54 @@
+﻿@page "/box/{BoxId}"
+
+@inject IBoxService BoxService
+@inject NavigationManager NavigationManager
+
+<h3>Box Contents of @box?.Name</h3>
+
+@if (box != null)
+{
+    <div class="item-grid">
+        @foreach (var item in box.Items)
+        {
+            <div class="item">
+                <img src="@item.ImageLink" alt="@item.Name" class="img-smaller" />
+                <p>@item.Name</p>
+                <button @onclick="() => DeleteItem(item)">Delete item</button>
+            </div>
+            <br/>
+        }
+    </div>
+}
+else
+{
+    <p>No items in the Box.</p>
+}
+
+<button @onclick="AddNewItem">Add an item</button>
+
+@code {
+    [Parameter]
+    public string BoxId { get; set; }
+    
+    private Box? box;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var boxes = BoxService.GetBoxes();
+        box = boxes.FirstOrDefault(b => b.Id == BoxId);
+    }
+
+    public void AddNewItem()
+    {
+        //navigate to adding page for that box
+        NavigationManager.NavigateTo($"/box/{BoxId}/additem");
+    }
+
+    public void DeleteItem(Item item)
+    {
+        BoxService.DeleteItem(box.Id, item.Name);
+        box.Items.Remove(item);
+        StateHasChanged();
+    }
+}

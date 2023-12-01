@@ -1,0 +1,39 @@
+﻿@page "/addbox"
+@inject IBoxService BoxService
+@inject NavigationManager NavigationManager
+
+
+<h3>Create New Boxes</h3>
+
+<form @onsubmit="AddBox">
+    <div>
+        <label for="boxName">Box Name:</label>
+        <input id="boxName" @bind="boxName">
+    </div>
+    <div>
+        <label for="boxImageLink">Box Image Link:</label>
+        <input id="boxImageLink" @bind="boxImageLink"/>
+    </div>
+    <button type="submit">Add Box</button>
+</form>
+
+
+@code {
+
+    private string boxName;
+    private string boxImageLink;
+
+
+    private void AddBox()
+    {
+        var box = new Box
+        {
+            Name = boxName,
+            ImageLink = boxImageLink
+        };
+        
+        BoxService.AddBox(box);
+        NavigationManager.NavigateTo("/");
+    }
+
+}

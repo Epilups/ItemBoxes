@@ -1,0 +1,45 @@
+﻿@page "/box/{boxId}/additem"
+
+@inject IItemService ItemService
+@inject NavigationManager NavigationManager
+
+<h3>Add Item to Box</h3>
+
+<form @onsubmit="AddItems">
+    <div>
+        <label for="itemName">Item Name:</label>
+        <input id="itemName" @bind="itemName"/>
+    </div>
+    <div>
+        <label for="itemImageLink">Item Image Link:</label>
+        <input id="itemImageLink" @bind="itemImageLink"/>
+    </div>
+    <button type="submit">Add Item</button>
+</form>
+
+
+@code {
+    
+    [Parameter]
+    public string BoxId { get; set; }
+
+    private string itemName;
+    private string itemImageLink;
+
+    private void AddItems()
+    {
+        var item = new Item
+        {
+            Name = itemName,
+            BoxId = BoxId,
+            ImageLink = itemImageLink
+        };
+        
+        ItemService.AddItem(item);
+        NavigationManager.NavigateTo($"/box/{BoxId}");
+        
+    }
+    
+    
+
+}

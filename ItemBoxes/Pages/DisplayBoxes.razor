@@ -1,0 +1,57 @@
+﻿@page "/"
+
+@inject IBoxService BoxService
+@inject NavigationManager NavigationManager
+
+<h3>Boxes</h3>
+
+@if (boxes.Any())
+{
+    <div class="box-grid">
+        @foreach (var box in boxes)
+        {
+            <div class="box" @onclick="() => ViewBox(box.Id)">
+                <img src="@box.ImageLink" alt="@box.Name" class="img-smaller" />
+                <p>@box.Name</p>
+                <button @onclick="() => DeleteBox(box.Id)">Delete Box</button>
+            </div>
+            
+        }
+    </div>
+}
+else
+{
+    <p>No boxes available.</p>
+}
+<button @onclick="BoxCreationPage">Create new Box</button>
+
+@code {
+
+    private List<Box> boxes;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        boxes = BoxService.GetBoxes();
+    }
+
+    private void ViewBox(string boxId)
+    {
+        if (boxes.Exists(b => b.Id == boxId))
+        {
+            NavigationManager.NavigateTo($"/box/{boxId}");
+        }
+    }
+
+    public void DeleteBox(string boxId)
+    {
+        BoxService.DeleteBox(boxId);
+        boxes = BoxService.GetBoxes();
+    }
+
+    private void BoxCreationPage()
+    {
+        NavigationManager.NavigateTo("/addbox");
+    }
+
+}
